@@ -1,0 +1,56 @@
+Ce framework est basé sur une architecture MVC (Modèle vue controlleur).
+Il est composé des dossiers suivants :
+
+/config
+	Config.php : Une class pour configurer le niveau de débugage de l'application, et la base de donnée à utiliser pour l'application
+
+/core
+	/doc
+		documentation.php : Le présent document
+		/UML
+			*---- ici les diagrammes UML du framework
+
+	Controller.php : La classe mère de tous les autres Controller dans laquelle vous trouverez toutes les méthodes natives de l'application comme les fonctions render(), set(), loadModel(), e404 ..
+
+	Dispatcher.php : la classe servant à appeler les autres classes en fonction de l'url envoyé
+
+	Model.php : Le model mère de tous les autres model de l'application, c'est ici que sont générées toutes les requetes sql avec l'objet PDO de vos futures applications.
+
+	Request.php : la classe qui symbolise les requetes http envoyées sur votre serveur
+
+	Router.php : Class permettant de parser l'url pour etre lu et exploiter par le dispatcher
+
+/Controller
+	Ici doit être placé tous les controllers de l'application à développé, ces controlleurs hériteront de la class Controller mère dans le core
+
+/Model
+	Toutes les classes modèles enfants sont à sauvegarder dans ce dossier et hériteront du modèle mère dans le core
+
+/views
+	Chaque controlleur doit posseder un dossier du même nom ici et dans lequel sera sauvegarder toutes les vues de chaque action du controlleur.
+
+	/Demo
+		index.php
+		hello.php
+
+	/Errors
+		e404.php
+	
+	Layouts/
+		default.php	
+
+Seul le dossier webroot est directement accessible par l'utilisateur
+/webroot
+
+C'est le fichier index.php qui se charge de recevoir les différents élements appelé par l'url parsé.
+index.php
+Ce fichier htacces se charge de rediriger toutes les urls vers index.php
+.htacces
+	/img
+		les images pour le css du site
+
+	/css
+		les feuilles de style
+
+	/javascript
+		les feuilles javascript de l'application
