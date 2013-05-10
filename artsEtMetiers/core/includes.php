@@ -6,5 +6,5 @@ require 'Controller.php';
 require 'Model.php';
 require 'Dispatcher.php';
 require 'Request.php';
-require 'Router.php';
 require ROOT.DS.'Components'.DS.'Auth.php';
+require 'Router.php';

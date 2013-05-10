@@ -3,7 +3,7 @@
 class AuthController extends Controller{
 
 	public $helpers = array('Form');
-	//public $components = array('Auth');
+	public $components = array('Auth');
 	
 
 	/**

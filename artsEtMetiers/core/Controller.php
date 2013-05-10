@@ -8,7 +8,6 @@ class Controller{
 	protected $referer;
 	private $rendered = false;
 	static $helperloaded = false;
-	static $componentloaded = false;
 
 	/**
 	*@param object $request instance de la classe Request
@@ -21,6 +20,7 @@ class Controller{
 			$this->helperLoad($this->helpers);
 			Controller::$helperloaded = true;
 		}
+		
 	}
 	
 	/**
@@ -134,6 +134,7 @@ class Controller{
 	*@return un attribut contenant l'instance du helper appelé
 	**/
 	public function helperLoad($helpers = array()){
+		echo 'helper';
 		foreach($helpers as $helper){
 			$file = ROOT.DS.'Helpers'.DS.$helper.'.php';
 			require_once $file;

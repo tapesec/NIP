@@ -12,8 +12,9 @@ class Dispatcher{
 		$this->request = new Request();
 		Router::parse($this->request->url, $this->request);
 		echo 'dispatcher';
-
+		
 		$controller = $this->loadController();
+		Auth::start($_SESSION['auth']);
 		if(!method_exists(get_class($controller), $this->request->action)){
 			if($this->error_event){
 				$this->error('Le controlleur '.$this->request->controller. ', n\'a pas de méthode '.$this->request->action);
@@ -22,6 +23,9 @@ class Dispatcher{
 			call_user_func_array(array($controller, $this->request->action), $this->request->param);
 			$controller->render($this->request->action);		
 		}
+		//if(isset($_SESSION['auth']) && !empty($_SESSION['auth'])){
+			
+		//}
 	}
 	/**
 	*@return instance du controlleur appelé par l'utilisateur dans l'url sous le format 
