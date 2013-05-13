@@ -4,12 +4,21 @@
 **/
 class Config{
 
+	/**
+	* configurer ici l'adresse de votre site internet.
+	**/
+	static $website_adress = 'http://localhost/artsetmetiers/blog';
+
 	static $debug_level = 1; // définit le niveau d'information affiché en cas d'erreur dans vos interactions en base de données : 
 	//									0 = aucune info, juste un message générique du type "service momentanément indisponnible (mode production),
 	//									1 = affiche les erreurs sql ou de connexion à PDO.
 
 	static $database_name = 'artsetmetiers';  // C'est ici qu'il faut changer défault par le nom de la base souhaité apres l'avoir rajouté au tableau ci-dessous.
 
+
+	/**
+	*configurer ici votre connexion à PDO et votre compte mysql
+	**/
 	static $database = array('default' => array(
 						'type'		=> 'mysql',
 						'host' 		=> 'localhost',
@@ -25,4 +34,23 @@ class Config{
 						'password'	=> '')
 
 	);
+
+	/**
+	* la proprieté statique Config::$acces permet de configurer les droits des utilisateurs pour chaque action de chaque
+	* controlleur, completer le tableau ci dessous pour chaque action necessitant un niveau d'authentification, ne remplissez pas
+	*pour les actions ouvertes au public comme la page d'accueil etc .. Il faudra dans votre table utilisateur créer un champ "statut"
+	*et lui donner des possibilités de valeur identique à ce tableau. Pour l'exemple le controlleur mycontrollerController laisse
+	*tous les utilisateurs ayant le champ statut qui a comme valeur membre acceder à l'action1. 
+	*
+	*
+	*
+	**/
+	static $access  = array(/*'mycontroller' (Nom du controller sans le suffixe Controller) => array(
+								'action1' => 'membre,
+								'action2' => 'niveau necessaire pour acceder au service'),*/
+							'auth' => array(
+								'edit' => 'membre',
+								'logout' => 'membre'),
+							'backoff' => array(
+								'addArticle' => 'admin'));
 }

@@ -101,7 +101,7 @@ class Model{
 
 
 	/**
-	*@param $data tableau de paramètre et de condition pour la requête.
+	*@param $data tableau contenant les donénes à sauegarder
 	*@return insert les données dans la base de données
 	**/
 	public function save($data = array()){
@@ -138,6 +138,73 @@ class Model{
 		}
 	}
 
+
+
+	/**
+	*@param $data tableau contenant les données à mettre à jour dans la base
+	*@return met à jour les données dans la base
+	**/
+	public function update($data = array(), $clause = array()){
+		
+		if($this->beforeSave($data)){
+			if(isset($data[$this->request->action])){
+				unset($data[$this->request->action]);
+			}
+			$fields ='';
+			foreach($data as $k => $v){
+				$fields .= ', '.$k.' = ? ';
+				//$tokken .= ', ?';
+				$array_exec[] = $v;
+				//debug($array_exec);
+			}
+			$fields = trim($fields, ',');
+
+			if(isset($clause['where'])){
+				$cond = $clause['where'];
+			}else{
+				die('les requetes update necessite une clause where obligatoirement !');
+			}
+			foreach($cond as $k => $v){
+					$filter[] = ' '.$k.' = ?';	
+					$array_exec[] = $v;
+					//debug($array_exec);
+			}
+			debug($array_exec);
+
+		$where = 'WHERE'.implode(' AND ', $filter);
+			$req = 'UPDATE '.lcfirst(get_class($this)).'s SET '.$fields. $where;
+			echo $req;
+			try{
+				$r = Model::$dbi->prepare($req);
+				$r->execute($array_exec);
+			
+				return true;
+			}catch(PDOException $e){
+				echo 'Error : '.$e->getMessage();
+				return false;
+			}
+		}else{
+			return false;
+		}
+
+	}
+
+
+
+	/**
+	*@return compte le nombre d'occurence de la table
+	**/
+	public function count(){
+
+		$req = 'SELECT COUNT(*) AS compteur FROM '.lcfirst(get_class($this)).'s';
+		$result = Model::$dbi->query($req);
+		 while($d = $result->fetch()){
+		 	return $d['compteur'];
+		 }
+	}
+
+
+
 	/**
 	*La fonction beforeSave ci-dessous permet d'appliquer des conditions de validation au formulaire utilisé par les visiteurs.
 	*Cette fonction est appelé à chaque fois que la méthode save est utilisé dans un controlleur
@@ -168,21 +235,7 @@ class Model{
 	*
 	**/
 
-	/**
-	*@param
-	**/
-	public function count(){
-
-		$req = 'SELECT COUNT(*) AS compteur FROM '.lcfirst(get_class($this)).'s';
-		$result = Model::$dbi->query($req);
-		 while($d = $result->fetch()){
-		 	return $d['compteur'];
-		 }
-	}
-
-
-
-
+	
 	/**
 	*@param $data les champs des formulaires à sauvegarder en base de données
 	*@return un message d'erreur si les conditions ne sont pas validées

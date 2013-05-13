@@ -11,7 +11,7 @@
 	<?php echo $this->link('javascript', 'style'); ?>
 </head>
 <body>
-	<?php echo Auth::$session['use_login']; ?>
+	<?php //echo Auth::$session['use_login']; ?>
 	<?php echo $this->session->flash(); ?>
 	<?php $data['pages'] = $this->layoutLoad('Blog', 'page'); ?>
 	<?php debug( $data['pages']); ?>
@@ -19,10 +19,10 @@
 
 
 <aside>
-	<?php echo 'je vais débuguer le vent'; debug(Auth::$session, true); ?>
-	<?php if(!empty(Auth::$session['checked']) && Auth::$session['checked'] == true): ?>
+	<?php echo 'débugage de auth session'; debug(Auth::$session, true); ?>
+	<?php if(!empty(Auth::$session['use_checked']) && Auth::$session['use_checked'] == true): ?>
 	<div>
-		<a href="<?php echo BASE_URL.'/auth/edit'; ?>">Editer profil</a><a href="<?php echo BASE_URL.'/auth/logout'; ?>">Deconnexion</a>
+		<a href="<?php echo BASE_URL.'/auth/edit/'.Auth::$session['use_id']; ?>">Editer profil</a><a href="<?php echo BASE_URL.'/auth/logout'; ?>">Deconnexion</a>
 	</div>
 	<?php else: ?>
 	<div>

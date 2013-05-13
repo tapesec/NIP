@@ -2,8 +2,7 @@
 
 class AuthController extends Controller{
 
-	public $helpers = array('Form');
-	public $components = array('Auth');
+	public $helpers = array('Form'); //charge les helpers passé dans le tableau
 	
 
 	/**
@@ -26,7 +25,7 @@ class AuthController extends Controller{
 					$this->session->setFlash('Inscription completed !');
 					$this->redirect('blog/index');
 				}else{
-					$this->session->setFlash('Impossible de sauvagarder ce formulaire retentez la manipulation ou contactez le webmaster');
+					$this->session->setFlash('Veuillez corriger vos erreurs');
 					$this->redirect($this->referer);
 				}
 			}
@@ -40,24 +39,67 @@ class AuthController extends Controller{
 	*@return affiche un formulaire de connexion
 	**/
 	public function connexion(){
-		
-		
-
 		if($this->request->is('GET')){
 			$this->layout = 'main';
+			$this->render('connexion');
 		}elseif($this->request->is('POST')){
 			$this->loadModel('User');
 			$check_user = $this->User->find(array(
 										'where' => array(
 											'use_login' => $this->request->data['use_login'],
-											'checked' => true,
+											'use_checked' => true,
 											'use_password1' => $this->request->data['use_password1'])));
+			//debug($check_user);
+			//die();
 			if($check_user){
 				Auth::load($check_user);
-				$this->redirect('blog/index');
+				$this->session->setFlash('BONJOUR !');
+				
+			}else{
+				$this->session->setFlash('login ou mot de passe incorrect !');
 			}
+				$this->redirect('blog/index');
 		}
 	}
-}
 
-?>
+	/**
+	*@return detruit la super variable de session auth et redirige en page d'accueil
+	**/
+	public function logout(){
+		Auth::destroy();
+		$this->session->setFlash('AU REVOIR !<br>');
+		
+		$this->redirect('blog/index');
+	}
+
+
+	/**
+	*@param $id l'identifiant du profil à éditer
+	*return met à jour la base de données si des données sont modifié dans le formulaire
+	**/
+	public function edit($id){
+		$this->loadModel('User');
+		
+
+		if($this->request->is('GET')){
+			$this->layout = 'main';
+			$user_data = $this->User->find(array('where' => array(
+													'use_id' => $id)));
+			if(!empty($user_data)){
+				$this->set('user', $user_data);
+			}
+			$this->render('edit');	
+		}elseif($this->request->is('PUT')){
+			//die('ca fonctionne !');
+			if($this->User->update($this->request->data, array('where' => array('use_id' => $id)))){
+				$this->session->setFlash('Informations mises à jour merci !');
+				$this->redirect($this->referer);
+			}
+			//die();
+			
+
+		}			
+			
+		
+	}
+}

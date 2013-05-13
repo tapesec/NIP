@@ -30,6 +30,7 @@ class BlogController extends Controller{
 									 'limit' => $limit));
 		
 		$this->set('article', $data);
+		$this->render('index');
 	}
 
 	/**
@@ -49,7 +50,7 @@ class BlogController extends Controller{
 			$this->e404('La page n\'existe pas ou plus');
 		}
 		$this->set('article', $data);
-
+		$this->render('voir');
 
 
 	}

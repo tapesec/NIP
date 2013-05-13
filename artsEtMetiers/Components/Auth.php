@@ -1,10 +1,13 @@
 <?php 
 class Auth{
 
-	static $session;
+	static $session; //array faisant référence à toutes les variables de session d'un utilisateur connecté
 
 
-
+	/**
+	*@param $user les informations issues d'une base de données d'un utilisateurs venant de se connecté
+	*@return crée et hydrate la super variable de sessions 'auth' de chaques attributs de l'utilisateur connecté
+	**/
 	public function load($user = array()){
 		debug(current($user));
 		//echo 'load !';
@@ -15,16 +18,25 @@ class Auth{
 	}
 
 
+	/**
+	*@param $sessionauth la super variable de session 'auth'
+	*@return hydrate le tableau static $session avec la session auth 
+	**/
 	static public function start($sessionauth){
-		echo 'start';
+		//echo 'start';
 		$array = array();
 		foreach($sessionauth as $k => $v){
 			$array[$k] = $v;
 		}	
 		self::$session = $array;
+	}
 
-		//debug(self::$session);
+	/**
+	*@return detruit la variable de session auth
+	**/
+	static public function destroy(){
+		unset($_SESSION['auth']);
+		
 	}
 	
 }
-?>

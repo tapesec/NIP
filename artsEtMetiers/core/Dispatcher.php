@@ -6,22 +6,32 @@ class Dispatcher{
 	*@var instance de la class Request
 	**/
 	public $request;
+	public $session;
 	private $error_event = false;
 
 	public function __construct(){
 		$this->request = new Request();
-		Router::parse($this->request->url, $this->request);
-		echo 'dispatcher';
-		
+		$this->session = new Session();
+		Router::checkAccess(Config::$access);
+		if(isset($_SESSION['auth']) && !empty($_SESSION['auth'])){
+			Auth::start($_SESSION['auth']);
+		}
+		Router::parse($this->request->url, $this->request, Auth::$session);
+		echo 'dispatcher instancié !<br>';
 		$controller = $this->loadController();
-		Auth::start($_SESSION['auth']);
+		
 		if(!method_exists(get_class($controller), $this->request->action)){
 			if($this->error_event){
 				$this->error('Le controlleur '.$this->request->controller. ', n\'a pas de méthode '.$this->request->action);
 			}	
 		}else{
 			call_user_func_array(array($controller, $this->request->action), $this->request->param);
-			$controller->render($this->request->action);		
+			if(isset($controller->render)){
+				$controller->render($controller->render);
+			}else{
+				$controller->render($this->request->action);		
+			}
+			
 		}
 		//if(isset($_SESSION['auth']) && !empty($_SESSION['auth'])){
 			
@@ -43,8 +53,8 @@ class Dispatcher{
 				require $file;
 				$this->error_event = true;
 
-				$controller = new $name($this->request);
-				$controller->session = new Session();
+				$controller = new $name($this->request, $this->session);
+				//$controller->session = new Session();
 				return $controller;
 			}
 		}else{

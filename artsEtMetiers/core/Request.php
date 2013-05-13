@@ -19,7 +19,20 @@ Class Request{
 	*@return true ou false en fonction du paramètre donné à la fonction
 	**/
 	public function is($type){
-		return (array_key_exists('REQUEST_METHOD', $_SERVER) && strtolower($_SERVER['REQUEST_METHOD']) == strtolower($type))? true : false;
+		if($type == 'PUT'){
+			foreach($this->data as $k => $v){
+				if(preg_match('/^[a-zA-Z-0-9_\-.]+id$/', $k)){
+					echo 'ok put !';
+					return true;
+					break;
+				}else{
+					echo 'pregmatch raté';
+					
+				}
+			}
+		}else{
+			return (array_key_exists('REQUEST_METHOD', $_SERVER) && strtolower($_SERVER['REQUEST_METHOD']) == strtolower($type))? true : false;
+		}
 	}
 
 	/**

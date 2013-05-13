@@ -13,12 +13,15 @@ class Controller{
 	*@param object $request instance de la classe Request
 	**/
 	public function __construct(Request $request=null, Session $session=null){
+		echo 'controller instancié !<br>';
 		$this->request = $request;
 		$this->session = $session;
 		$this->referer = (isset($_SERVER['HTTP_REFERER']))? $_SERVER['HTTP_REFERER']: '';	
 		if(!Controller::$helperloaded){
-			$this->helperLoad($this->helpers);
-			Controller::$helperloaded = true;
+			if(isset($this->helpers)){
+				$this->helperLoad($this->helpers);
+				Controller::$helperloaded = true;
+			}
 		}
 		
 	}
@@ -29,7 +32,7 @@ class Controller{
 	**/
 	public function render($view){
 		if($this->rendered){
-			echo 'rendered';
+			//echo 'rendered';
 			return false;
 		}
 		extract($this->vars);
@@ -134,7 +137,6 @@ class Controller{
 	*@return un attribut contenant l'instance du helper appelé
 	**/
 	public function helperLoad($helpers = array()){
-		echo 'helper';
 		foreach($helpers as $helper){
 			$file = ROOT.DS.'Helpers'.DS.$helper.'.php';
 			require_once $file;

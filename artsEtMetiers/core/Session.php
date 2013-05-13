@@ -8,7 +8,8 @@ class Session{
 	**/
 	public  function __construct(){
 		session_start(); 
-		
+		echo 'new session !<br>';
+
 	}
 
 
@@ -33,9 +34,10 @@ class Session{
 	**/
 	public function flash(){
 		if(!empty($_SESSION['flash'])){
-			echo $_SESSION['flash'];
+			echo $_SESSION['flash'].'<br>';
 		}
-		$_SESSION['flash'] ='';		
+		/*$_SESSION['compteur'] = $_SESSION['compteur'] +1;*/
+		$_SESSION['flash'] ='';
 	}
 
 }

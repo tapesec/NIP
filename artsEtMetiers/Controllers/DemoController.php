@@ -4,26 +4,7 @@ class DemoController extends Controller{
 
 	public function index(){
 
-		$data = array(array('cat' => 'sites intranet',
-							'non' => 'dspap',
-							'url' => 'test url'),
-					  array('cat' => 'sites intranet',
-					  		'non' => 'dopc',
-					  		'url' => 'autres url'),
-					   array('cat' => 'sites intranet',
-					  		'non' => 'dcpj',
-					  		'url' => 'autrs ul'),
-					    array('cat' => 'sites d\'urgences',
-					  		'non' => 'dcpaf',
-					  		'url' => 'autr url'),
-					     array('cat' => 'sites d\'urgences',
-					  		'non' => 'dostl',
-					  		'url' => 'autres url'),
-					      array('cat' => 'sites externe',
-					  		'non' => 'alcool',
-					  		'url' => 'autres url'));
-		$this->set('test', $data);
-		$this->render('index');
+		
 	}
 
 	public function hello($name){
