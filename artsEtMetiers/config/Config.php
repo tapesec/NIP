@@ -49,8 +49,25 @@ class Config{
 								'action1' => 'membre,
 								'action2' => 'niveau necessaire pour acceder au service'),*/
 							'auth' => array(
-								'edit' => 'membre',
-								'logout' => 'membre'),
+								'edit' => 1,
+								'logout' => 1),
 							'backoff' => array(
-								'addArticle' => 'admin'));
+								'index' => 10,
+								'addArticle' => 10,
+								'listArticle' => 10));
+
+	
+	/**
+	*@param le niveau d'acces de l'utilisateur sous forme numérique
+	*@return son niveau d'acces sous forme de chaine de caractère explicite
+	*Configurer le nom explicite du rang de vos utilisateur en fonction du rang numérique que vous avez configuré ci dessus
+	*sachant que celui qui a le niveau le plus haut peut faire tout ce que fait le niveau d'en dessous
+	**/
+	static function accessShow($lvl){
+		$rank[1] = 'membre';
+		$rank[2] = 'modérateur';
+		$rank[10] = 'administrateur';
+		
+		return $rank[$lvl];
+	}
 }

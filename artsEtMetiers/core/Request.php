@@ -21,7 +21,7 @@ Class Request{
 	public function is($type){
 		if($type == 'PUT'){
 			foreach($this->data as $k => $v){
-				if(preg_match('/^[a-zA-Z-0-9_\-.]+id$/', $k)){
+				if(preg_match('/^[a-zA-Z-0-9_\-.]+id$/', $k) && !empty($v)){
 					echo 'ok put !';
 					return true;
 					break;

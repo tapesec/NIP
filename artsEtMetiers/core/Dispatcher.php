@@ -8,6 +8,7 @@ class Dispatcher{
 	public $request;
 	public $session;
 	private $error_event = false;
+	static $controller;
 
 	public function __construct(){
 		$this->request = new Request();
@@ -52,9 +53,9 @@ class Dispatcher{
 			}else{
 				require $file;
 				$this->error_event = true;
-
 				$controller = new $name($this->request, $this->session);
-				//$controller->session = new Session();
+				self::$controller[$name] = $controller;
+				//debug(self::$controller);				
 				return $controller;
 			}
 		}else{

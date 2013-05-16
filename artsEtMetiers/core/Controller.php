@@ -13,7 +13,7 @@ class Controller{
 	*@param object $request instance de la classe Request
 	**/
 	public function __construct(Request $request=null, Session $session=null){
-		echo 'controller instancié !<br>';
+		echo get_class($this).' instancié !<br>';
 		$this->request = $request;
 		$this->session = $session;
 		$this->referer = (isset($_SERVER['HTTP_REFERER']))? $_SERVER['HTTP_REFERER']: '';	
@@ -69,8 +69,8 @@ class Controller{
 	public function loadModel($model){
 		$file = ROOT.DS.'Models'.DS.ucfirst($model).'.php';
 		if(file_exists($file)){
-			require $file;
-			if(!isset($this->model)){	
+			require_once $file;
+			if(!isset($this->$model)){	
 				$this->$model =  new $model($this->session, $this->request);
 			}
 		}else{
@@ -88,10 +88,14 @@ class Controller{
 		$controller_name = $controller.'Controller';
 		$file = ROOT.DS.'Controllers'.DS.$controller_name.'.php';
 		require_once $file;
-		$c = new $controller_name($this->request, $this->session);
-		$data = $c->$action();
-		//debug($data, false);
+		if(!isset(Dispatcher::$controller[$controller_name])){
+			$c = new $controller_name($this->request, $this->session);
+			Dispatcher::$controller[$controller_name] = $c;
+		}
+		$data = Dispatcher::$controller[$controller_name]->$action();
 		return $data;
+		//debug($data, false);
+		
 	}
 
 	/**

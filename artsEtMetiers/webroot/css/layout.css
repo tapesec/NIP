@@ -47,3 +47,9 @@ q:before, q:after {
 blockquote, q {
   quotes: "" ""; }
 
+pre{
+  border:1px solid gray;
+  background-color: lightgray;
+  margin:15px;
+  padding:10px;
+}

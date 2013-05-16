@@ -21,6 +21,8 @@ class AuthController extends Controller{
 				$this->redirect($this->referer);
 			}else{
 				debug($check_user);
+				$this->request->data['use_statut'] = 1;
+				$this->request->data['use_checked'] = 1;
 				if($this->User->save($this->request->data)){
 					$this->session->setFlash('Inscription completed !');
 					$this->redirect('blog/index');
@@ -79,8 +81,7 @@ class AuthController extends Controller{
 	**/
 	public function edit($id){
 		$this->loadModel('User');
-		
-
+	
 		if($this->request->is('GET')){
 			$this->layout = 'main';
 			$user_data = $this->User->find(array('where' => array(
@@ -93,6 +94,9 @@ class AuthController extends Controller{
 			//die('ca fonctionne !');
 			if($this->User->update($this->request->data, array('where' => array('use_id' => $id)))){
 				$this->session->setFlash('Informations mises à jour merci !');
+				$this->redirect($this->referer);
+			}else{
+				$this->session->setFlash('Une erreur est survenu veuillez réessayer ou contacter l\'administrateur');
 				$this->redirect($this->referer);
 			}
 			//die();

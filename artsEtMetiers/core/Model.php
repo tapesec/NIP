@@ -12,6 +12,7 @@ class Model{
 	*@return $dbi : retourne une instance de PDO.
 	**/
 	public function __construct(Session $session, Request $request){
+		echo 'model '.get_class($this).' instancié !<br>';
 		$this->session = $session;
 		$this->request = $request;
 		if(!Model::$connected){
@@ -100,6 +101,8 @@ class Model{
 
 
 
+	
+
 	/**
 	*@param $data tableau contenant les donénes à sauegarder
 	*@return insert les données dans la base de données
@@ -184,12 +187,30 @@ class Model{
 				return false;
 			}
 		}else{
+			echo 'ratééééééééééééééééééééééééééééé';
 			return false;
 		}
 
 	}
 
 
+	/**
+	*
+	**/
+	public function delete($param = array()){
+	foreach($param as $k => $v){
+		$k .= ' = ?';
+		$array_exec[] = $v;
+		break;
+	}
+	
+		$req = 'DELETE FROM '.lcfirst(get_class($this)).'s WHERE '.$k;
+	//	echo $req;
+	//print_r($array_exec);
+	//die('attention !');
+		$r = Model::$dbi->prepare($req);
+		$r->execute($array_exec);
+	}
 
 	/**
 	*@return compte le nombre d'occurence de la table
@@ -296,6 +317,8 @@ class Model{
 							}
 						}echo 'email ok<br>';
 					}return true;
+				}else{
+					return true;
 				}
 			}else{
 				die('Les données reçu ne proviennt pas d\une source valide, quelque chose ne fonctionne pas normalement !');

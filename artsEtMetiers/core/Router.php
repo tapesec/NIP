@@ -18,10 +18,10 @@ class Router{
 		$request->action = (isset($k[1]))? $k[1] : 'index';
 		$request->param = array_slice($k, 2);
 		if(isset(self::$right[$request->controller][$request->action])){
-			debug(self::$right[$request->controller][$request->action]);
-			debug(Auth::$session['use_statut']);
+			//debug(self::$right[$request->controller][$request->action]);
+			//debug(Auth::$session['use_statut']);
 			if(isset(Auth::$session['use_statut'])){
-				if(self::$right[$request->controller][$request->action] == Auth::$session['use_statut'] || self::$right[$request->controller][$request->action] == 'all'){
+				if(self::$right[$request->controller][$request->action] <= Auth::$session['use_statut']){
 				//
 				return true;
 				}else{
