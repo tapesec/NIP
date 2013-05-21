@@ -51,7 +51,7 @@ class Model{
 		$order = (isset($data['order']))? $data['order'] : substr(lcfirst(get_class($this)), 0, 3).'_id DESC';
 		$table_to_join = (isset($data['join']['table']) && isset($data['join']['type']))? $data['join']['table'] : '';
 		$type_of_join = (isset($data['join']['type']))? $data['join']['type'] : '';
-		$join_cond = (isset($data['join']['table']) && isset($data['join']['type']) && isset($data['join']['condition']))? ' ON '.$data['join']['condition'] : '';
+		$join_cond = (isset($data['join']['table']) && isset($data['join']['type']) && isset($data['join']['condition']))? $data['join']['condition'] : '';
 		$group = (isset($data['group']))? $data['group'] : '';
 		/*si une condition WHERE est passé en attribut à la fonction find, on écrit le morceau de la futur requête préparé avec des tokkens
 		pour eviter les injections sql sinon on met par défaut comme condition 1=1*/
@@ -63,12 +63,30 @@ class Model{
 		}else{
 			$m = '1=1';
 		}
-	
-		$req = 'SELECT '.$fields.' FROM '.lcfirst(get_class($this)).'s '.$type_of_join.' '.$table_to_join.' '.$join_cond.
-		' WHERE '.$m.' '.$group.' ORDER BY '.$order.'  '.$limit;
+		$jointure='';
+		if(!empty($table_to_join) && !empty($type_of_join) && !empty($join_cond)){
+			if(is_array($table_to_join)){
+				$c = count($table_to_join);
+				for($i=0;$i<$c; $i++) {
+					$jointure .= ' LEFT OUTER JOIN '.$table_to_join[$i].' ON '.$join_cond[$i];
+				}
+			}else{
+				$jointure .= ' LEFT OUTER JOIN '.$table_to_join.' ON '.$join_cond;
+			}
+		}
+		/*debug($jointure);
+		debug($table_to_join);
+		debug($type_of_join);
+		debug($join_cond);*/
 
-		//echo $req.'<br>'; //<-- affichera la requête SQL finale avant sa préparation et l'insertion des variables sécurisées
 		
+
+
+		$req = 'SELECT '.$fields.' FROM '.lcfirst(get_class($this)).'s '.$jointure.
+		' WHERE '.$m.' '.$group.' ORDER BY '.$order.'  '.$limit;
+		
+		//echo $req.'<br>'; //<-- affichera la requête SQL finale avant sa préparation et l'insertion des variables sécurisées
+		//die();
 		// on essaye d'executer le bloc ci dessous ..
 		try{
 			if($cond !== '1=1'){

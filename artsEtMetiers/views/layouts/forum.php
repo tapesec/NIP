@@ -1,4 +1,3 @@
-
 <!-- Le template principale du site intranet -->
 <!DOCTYPE>
 <html>
@@ -32,10 +31,3 @@
 		<a href="<?php echo BASE_URL.'/auth/inscription'; ?>">Inscription</a><a href="<?php echo BASE_URL.'/auth/connexion'; ?>">Connexion</a>
 	</div>
 	<?php endif; ?>
-
-	<?php $data['categories'] = $this->layoutLoad('Blog', 'listCat'); ?>
-	<?php debug($data['categories']); ?>
-
-</aside>
-</body>
-</html>

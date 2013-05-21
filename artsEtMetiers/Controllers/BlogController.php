@@ -71,7 +71,7 @@ class BlogController extends Controller{
 	**/
 	public function page(){
 		$this->loadModel('Page');
-		$data['pages'] = $this->Page->find();
+		$data['pages'] = $this->Page->find(array('where' => array('pag_type' => 'front')));
 		return $data['pages'];
 	}
 

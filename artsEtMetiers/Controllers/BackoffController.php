@@ -84,8 +84,73 @@ class BackoffController extends Controller{
 		$this->redirect($this->referer);
 	}
 
+
 	/**
-	*@return le nom et l'url pour retourner en page d'accueil
+	*@param $id l'identifiant de la section à editer
+	**/
+	public function forum($id=null){
+		$this->layout = 'back';
+		$this->loadModel('Section');
+		if($this->request->is('GET')){
+			$data['section'] = $this->Section->find();
+			if(isset($id) && !empty($id)){
+				$data['edit'] = $this->Section->find(array('where' => array('sec_id' => $id)));
+				$this->set('sections', array($data['section'], $data['edit']));
+			}else{
+				$this->set('sections', $data['section']);
+			}
+		}elseif($this->request->is('PUT')){
+			if(empty($this->request->data['sec_online'])){
+				$this->request->data['sec_online'] = 0;
+			}
+			if($this->Section->update($this->request->data, array('where' => array('sec_id' => $id)))){
+				$this->session->setFlash('Section bien modifié !');
+				$this->redirect($this->referer);
+			}else{
+				$this->session->setFlash('Erreur de modification !');
+				$this->redirect($this->referer);
+			}
+
+		}elseif($this->request->is('POST')){
+			if($this->Section->save($this->request->data)){
+				$this->session->setFlash('Section bien ajouté !');
+				$this->redirect($this->referer);
+			}else{
+				$this->session->setFlash('Erreur de sauvegarde !');
+			}
+			
+		}
+		$this->render('forum');
+	}
+
+
+	/**
+	*
+	**/
+	public function listUsers($id=null){
+		
+		$this->loadModel('User');
+		if($this->request->is('GET')){
+			$data['users'] = $this->User->find();$this->layout = 'back';
+			if(isset($id)){
+				$data['edit'] = $this->User->find(array('where' => array('use_id' => $id)));
+				$this->set('users', array($data['users'], $data['edit']));
+			}else{
+				$this->set('users', $data['users']);
+			}
+		}elseif($this->request->is('PUT')){
+			if($this->User->update($this->request->data, array('where' => array('use_id' => $id)))){
+				$this->session->setFlash('Membre bien edité');
+				$this->redirect($this->referer);
+			}else{
+				$this->session->setFlash('La modification a échoué');
+			}
+		}
+		$this->render('listUsers');
+	}
+
+	/**
+	*@return le nom et l'url pour retourner en page d'accueil (layout)
 	**/
 	public function home(){
 		$this->loadModel('Page');

@@ -54,7 +54,10 @@ class Config{
 							'backoff' => array(
 								'index' => 10,
 								'addArticle' => 10,
-								'listArticle' => 10));
+								'listArticle' => 10,
+								'delArticle' => 10,
+								'forum' => 10,
+								'listUsers' => 10));
 
 	
 	/**
@@ -63,11 +66,20 @@ class Config{
 	*Configurer le nom explicite du rang de vos utilisateur en fonction du rang numérique que vous avez configuré ci dessus
 	*sachant que celui qui a le niveau le plus haut peut faire tout ce que fait le niveau d'en dessous
 	**/
-	static function accessShow($lvl){
+	static function accessShow($lvl=null){
 		$rank[1] = 'membre';
 		$rank[2] = 'modérateur';
 		$rank[10] = 'administrateur';
 		
-		return $rank[$lvl];
+		if(isset($lvl) && !is_null($lvl) && !empty($lvl)){
+			return $rank[$lvl];
+		}else{
+			$c = count($rank);
+			foreach($rank as $k => $v) {
+				$list[$k] = $rank[$k];
+			}
+			return $list;
+		}
+		
 	}
 }

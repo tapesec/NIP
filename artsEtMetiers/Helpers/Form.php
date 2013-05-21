@@ -53,8 +53,8 @@ class Form{
 		}elseif($type == 'select'){
 			echo '<select name="'.$name.'" class="'.$class.'">';
 
-			foreach ($list as $k => $v) {
-				$this->parse($k, $v, $value);
+			foreach ($list as $k => $array) {
+				$this->parse($k, $array, $value);
 			}
 			
 
@@ -99,14 +99,21 @@ class Form{
 			if(preg_match('/id/', $k)){
 				self::$id_value = $array;//echo '<option value="'.$array.'">qzdqzdqz</option>';
 			}elseif(preg_match('/name|title|content/i', $k)){
-				if($array == $value){
+				if(self::$id_value == $value){
 					echo '<option value="'.self::$id_value.'" selected >'.$array.'</option>';	
 				}else{
 					echo '<option value="'.self::$id_value.'" >'.$array.'</option>';
 				}
-				
+			
+			}elseif(is_int($k)){
+				echo '<option value="'.$k.'" selected>'.$array.'</option>';
 			}else{
-				echo '<option value="'.$array.'">'.$array.'</option>';	
+				if($array == $value){
+					echo '<option value="'.$array.'" selected>'.$array.'</option>';
+				}else{
+					echo '<option value="'.$array.'">'.$array.'</option>';	
+				}
+				
 			}
 										
 		}
