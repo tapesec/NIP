@@ -18,9 +18,13 @@ new Dispatcher();
 if(isset($_SESSION)){
 	debug($_SESSION);
 };
-debug($_SERVER);
+if(isset(Auth::$session)){
+	//debug(auth::$session);
+}
+//debug($_POST);
+//debug($_SERVER);
 
-
+//session_destroy();
 $time_stop = microtime(true); // récupération du timestamp en fin d'éxécution de la page
 
 $time_exec = round($time_stop - $time_start, 5); ?> <!-- Diférence entre le temps de fin et le temps de début -->

@@ -3,6 +3,7 @@
 class Form{
 
 	static public $id_value;
+	//static public $tokken_id =1;
 
 	/**
 	*@param $url, $type, $class l'url de la cible du formulaire, la méthode d'envoie du formulaire, éventuellement la classe css
@@ -12,16 +13,28 @@ class Form{
 		$type = (isset($param['type']))? $param['type'] : 'text';
 		$class = (isset($param['class']))? $param['class'] : '';
 		$name = (isset($param['name']))? $param['name'] :'';
-		$value= (isset($param['value']))? $param['value'] : ''; 
+		$value = (isset($param['value']))? $param['value'] : '';
+		$size = (isset($param['size']))? $param['size'] : Config::$maxFileSize; 
+		$enctype='';
+		if($param['type'] == 'FILE'){
+			$type ='POST';
+			$enctype = 'enctype="multipart/form-data"';
+		}
 		
 		$tokken = rand(1, 20) * 3333;
+		$tk = $tokken;
 		$tn = explode('/', $url);
 		$tokken_name = $tn[1];
-		$_SESSION[$tokken_name] = $tokken;
-		echo'<form action="'.BASE_URL.'/'.$url.'" method="'.$type.'" class="'.$class.'">';
-		echo '<input type="hidden" name="'.$tokken_name.'" value="'.$tokken.'">';
+
+		$_SESSION[$tokken_name] = $tk;
+		
+		echo '<form action="'.BASE_URL.'/'.$url.'" method="'.$type.'" class="'.$class.'" '.$enctype.'>'.PHP_EOL;
+		echo '<input type="hidden" name="'.$tokken_name.'" value="'.$tk.'">'.PHP_EOL;
+		if($param['type'] == 'FILE'){
+			echo '<input type="hidden" name="max_size" value="'.$size.'">'.PHP_EOL;
+		}
 		if(isset($name) && isset($value)){
-			echo '<input type="hidden" name="'.$name.'" value="'.$value.'">';
+			echo '<input type="hidden" name="'.$name.'" value="'.$value.'">'.PHP_EOL;
 		}
 		
 	}
@@ -37,7 +50,7 @@ class Form{
 		$value= (isset($param['value']))? $param['value'] : '';
 		$list = (isset($param['list']))? $param['list'] : '';
 		$class = (isset($param['class']))? $param['class'] : '';
-		$message = (isset($pram['message']))? $param['message'] : '';
+		$message = (isset($param['message']))? $param['message'] : '';
 		if(is_array($list)){
 			if(is_array(current($list))){
 				debug(current($list));
@@ -48,7 +61,7 @@ class Form{
 			echo '<label>'.$label.'</label>'.PHP_EOL;
 		}
 		if($type == 'textarea'){
-			echo '<textarea name="'.$name.'" class="'.$class.'">'.$value.'</textarea>';
+			echo '<textarea name="'.$name.'" class="'.$class.'">'.$value.'</textarea>'.PHP_EOL;
 				
 		}elseif($type == 'select'){
 			echo '<select name="'.$name.'" class="'.$class.'">';
@@ -56,17 +69,24 @@ class Form{
 			foreach ($list as $k => $array) {
 				$this->parse($k, $array, $value);
 			}
-			
 
-			echo '</select>';
+			echo '</select>'.PHP_EOL;
 
 		}elseif($type == 'checkbox'){
 			$checked = ($value == 1)? 'checked' : '';
-			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" class="'.$class.'" '.$checked.'>'.$label;	
+			$value = ($value ==0)? 1 : $value;
+			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" class="'.$class.'" '.$checked.'>'.$label.PHP_EOL;	
+		}elseif($type == 'file'){
+			echo '<input type="'.$type.'" name="'.$name.'" class="'.$class.'">'.PHP_EOL;
 		}else{
-			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" class="'.$class.'">';	
+			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" class="'.$class.'">'.PHP_EOL;	
 		}if($message){
-			echo (isset($_SESSION[$name]))? $_SESSION[$name] : '';
+			if(isset($message['class'])){
+				echo (isset($_SESSION[$name]))? '<span class="'.$message['class'].'">'.$_SESSION[$name].'</span>' : '';
+			}else{
+				echo (isset($_SESSION[$name]))? '<span>'.$_SESSION[$name].'</span>' : '';
+			}
+			
 		}
 		
 	}

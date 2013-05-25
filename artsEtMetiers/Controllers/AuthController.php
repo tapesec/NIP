@@ -46,7 +46,9 @@ class AuthController extends Controller{
 			$this->render('connexion');
 		}elseif($this->request->is('POST')){
 			$this->loadModel('User');
-			$check_user = $this->User->find(array(
+			$check_user = $this->User->find(array('join' => array('type' => 'LEFT OUTER JOIN',
+												  				  'table' => 'avatars',
+												  				  'condition' => 'use_id = ava_id_user'),
 										'where' => array(
 											'use_login' => $this->request->data['use_login'],
 											'use_checked' => true,
@@ -83,12 +85,19 @@ class AuthController extends Controller{
 		$this->loadModel('User');
 	
 		if($this->request->is('GET')){
-			$this->layout = 'main';
-			$user_data = $this->User->find(array('where' => array(
+			
+			$user_data = $this->User->find(array('fields' => 'use_id, use_login, use_mail, use_prenom, use_profession,
+															 use_residence, use_etudes, use_password1, use_password2,
+															  use_dateI, use_dateC, use_statut, ava_id, ava_url, ava_id_user',
+													'join' => array('type' => 'LEFT OUTER JOIN',
+																	'table' => 'avatars',
+																	'condition' => 'use_id = ava_id_user'),
+													'where' => array(
 													'use_id' => $id)));
 			if(!empty($user_data)){
 				$this->set('user', $user_data);
 			}
+			$this->layout = 'main';
 			$this->render('edit');	
 		}elseif($this->request->is('PUT')){
 			//die('ca fonctionne !');
@@ -102,8 +111,46 @@ class AuthController extends Controller{
 			//die();
 			
 
-		}			
-			
+		}					
+	}
+
+	/**
+	*
+	**/
+	public function uploadAvatar($id){
+		$this->layout='';
+		$this->loadModel('Avatar');
+		echo 'request action';
+		debug($this->request->data);
+		echo 'request file';
+		debug($this->request->file);
+		echo 'session :';
+		debug($_SESSION);
+		$avatar = (!empty($this->request->file['avatar']))? $this->request->file['avatar'] : '';
 		
+		if(preg_match('/[.jpg|.png|.gif]$/', $avatar['name'])
+		  && $avatar['size'] <= $this->request->data['max_size']
+		  && !$avatar['error']){
+			$ext = explode('.', $avatar['name']);
+		  	$file = 'avatar'.DS.Auth::$session['use_login'].'.'.end($ext);
+			$dest = WEBROOT.DS.'img'.DS;
+			if(move_uploaded_file($avatar['tmp_name'], $dest.$file)){
+				$this->request->data['ava_url'] = preg_replace('#\\\#', '/', $file);
+				debug($this->request->data);
+
+				if($this->Avatar->update($this->request->data, array('where' => array('ava_id_user' => $id)))){
+					$this->session->setFlash('Avatar bien mis à jour !');
+					$this->redirect($this->referer);
+				}else{
+					$this->session->setFlash('La mise à jour de votre avatar a échoué');
+					$this->redirect($this->referer);
+				}
+			}else{
+				die('pas cool');
+			}
+		}else{
+			die('bizare');
+		}
+		die();
 	}
 }

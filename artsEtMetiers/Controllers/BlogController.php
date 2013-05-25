@@ -1,7 +1,7 @@
 <?php
 class BlogController extends Controller{
 	
-	public $helpers = array('Truncate');
+	public $helpers = array('Truncate', 'DateHelper');
 	//public $components = array('Auth');
 
 	public $paginate = array('table' => 'Article',
@@ -44,14 +44,43 @@ class BlogController extends Controller{
 			$this->e404('Il y a une erreur dans votre url');
 		}
 
-		$data = $this->Article->find(array('where' => array(
-									'art_id' => $id)));
+		$data = $this->Article->find(array('fields' => 'art_id, art_title, art_content, art_dateC, cat_name',
+									 'where' => array(
+									 	'art_slot' => 'blog',
+									 	'art_online' => true,
+									 	'art_id' => $id),
+									 'join' => array(
+									 	'type' => 'LEFT OUTER JOIN',
+									 	'table' => 'categories',
+									 	'condition' => 'art_cat_id = cat_id')));
 		if(empty($data)){
 			$this->e404('La page n\'existe pas ou plus');
 		}
-		$this->set('article', $data);
+		$this->set('v', $data);
 		$this->render('voir');
+	}
 
+
+	/**
+	*@param $category, le nom de la catégorie
+	**/
+	public function cat($category, $page=1){
+		$this->loadModel('Article');
+		$this->layout = 'main';
+		$limit = $this->paginate($page, 'Article');
+		$data = $this->Article->find(array('fields' => 'art_id, art_title, art_content, art_dateC, cat_name',
+									 'where' => array(
+									 	'art_slot' => 'blog',
+									 	'art_online' => true,
+									 	'cat_name' => $category),
+									 'join' => array(
+									 	'type' => 'LEFT OUTER JOIN',
+									 	'table' => 'categories',
+									 	'condition' => 'art_cat_id = cat_id'),
+									 'limit' => $limit));
+		
+		$this->set('article', $data);
+		$this->render('cat');
 
 	}
 
@@ -71,7 +100,8 @@ class BlogController extends Controller{
 	**/
 	public function page(){
 		$this->loadModel('Page');
-		$data['pages'] = $this->Page->find(array('where' => array('pag_type' => 'front')));
+		$data['pages'] = $this->Page->find(array('where' => array('pag_type' => 'front'),
+												 'order' => 'pag_id ASC'));
 		return $data['pages'];
 	}
 

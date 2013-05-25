@@ -2,7 +2,7 @@ Ce framework est basé sur une architecture MVC (Modèle vue controlleur).
 Il est composé des dossiers suivants :
 
 /config
-	Config.php : Une class pour configurer le niveau de débugage de l'application, et la base de donnée à utiliser pour l'application
+	Config.php : Une class pour configurer le niveau de débugage de l'application, et la base de donnée à utiliser pour l'application. La configuration de l'ACL se fait aussi dans cette classe
 
 /core
 	/doc
@@ -54,3 +54,76 @@ Ce fichier htacces se charge de rediriger toutes les urls vers index.php
 
 	/javascript
 		les feuilles javascript de l'application
+
+
+
+=====================================================================================================================
+
+
+
+1/ LES CONTROLLEURS
+
+
+Les méthodes de la classe controller.
+
+Quand vous commencez à développer une application web avec ce framework vous allez créer un premier controlleur dans les règles du MVC. Vous ferez heriter ce controlleur de la classe Controller en ajoutant Controller en suffixe exemple :
+
+<?php
+class AccueilController extends Controller{
+	
+
+}
+?>
+
+Vous creerez ensuite votre première action de la manière suivante :
+
+<?php
+class ExempleController extends Controller{
+	
+	public function mapremiereaction(){
+
+	# .. le code
+	}
+
+}
+?>
+
+
+
+
+	1.x.x / Les diférentes méthodes de la classe Model :
+
+	<?php
+	class ExempleController extends Controller{
+
+		public function exemple(){
+
+			$this->loadModel($nomdumodel); // Le nom du Model doit etre au singulier et la premiere lettre en majuscule
+		}
+	}
+	?>
+
+	Vous avez acces à présent à toutes les méthodes de récupérations ou de création de base de donnée exemple avec la méthode find
+
+	class ExempleController extends Controller{
+
+		public function exemple(){
+
+			$this->loadModel('Modeltest'); // Le Model doit etre au singulier et la premiere lettre en majuscule
+
+			$data = $this->Modeltest->find(); 
+
+		}
+	} 
+	Model::find() est la requete select la plus basique pour recuperer toutes les données d'une table
+Doc en cours de rédaction
+
+
+2/  
+
+
+
+
+
+
+

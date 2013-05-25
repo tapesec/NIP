@@ -1,3 +1,6 @@
+<div class="formulaire">
+<h1>Connexion</h1>
+<p>Seul les visiteurs inscris et connectés peuvent écrire un message ou un commentaire sur le site.</p>	
 <?php //debug(Auth::$auth['use_login']); ?>
 
 <?php //$auth = ($auth); ?>
@@ -10,6 +13,7 @@
 		<?php $this->Form->input(array('name' => 'use_password1', 'type' => 'password', 'label' => 'Mot de passe :', 'message' => 'true')); ?>
 	</p>
 	<p>
-		<?php $this->Form->end(array('type' => 'submit', 'value' => 'connexion'));    ?>
+		<?php $this->Form->end(array('type' => 'submit', 'value' => 'connexion', 'class' => 'submit'));    ?>
 	</p>
 
+</div>

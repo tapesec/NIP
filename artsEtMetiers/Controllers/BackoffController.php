@@ -45,6 +45,9 @@ class BackoffController extends Controller{
 				if(!empty($data_article)){
 					$this->set('articles', array($data_article, $listCat));
 				}	
+			}else{
+				$listCat = $this->Categorie->find(array('fields' => 'cat_id, cat_name'));
+				$this->set('listCat', $listCat);
 			}
 		}elseif($this->request->is('PUT')){
 			debug($this->request->data);

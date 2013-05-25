@@ -13,6 +13,9 @@ class Config{
 	//									0 = aucune info, juste un message générique du type "service momentanément indisponnible (mode production),
 	//									1 = affiche les erreurs sql ou de connexion à PDO.
 
+
+	static $maxFileSize = 1048576; // (en octets) la taille max par défaut des fichiers à uploader dans vos formulaires
+
 	static $database_name = 'artsetmetiers';  // C'est ici qu'il faut changer défault par le nom de la base souhaité apres l'avoir rajouté au tableau ci-dessous.
 
 
@@ -51,6 +54,9 @@ class Config{
 							'auth' => array(
 								'edit' => 1,
 								'logout' => 1),
+							'forum' => array(
+								'addSubject' => 1,
+								'addReply' =>1),
 							'backoff' => array(
 								'index' => 10,
 								'addArticle' => 10,
@@ -79,7 +85,10 @@ class Config{
 				$list[$k] = $rank[$k];
 			}
 			return $list;
-		}
-		
+		}		
 	}
+
+
+	
+
 }

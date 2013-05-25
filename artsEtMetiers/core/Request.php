@@ -4,13 +4,16 @@ Class Request{
 
 	public $url; // l'url tapé par l'internaute dans son navigateur
 	public $data = array(); // les données issues de requêtes GET ou POST
-
+	public $file = array();
 
 	public function __construct(){
 		$this->url = (isset($_SERVER['PATH_INFO']))? $_SERVER['PATH_INFO'] : '';
 		$data = (isset($_GET))? $_GET : '';
 		$data = (isset($_POST))? $_POST : '';
+		$file = (isset($_FILES))? $_FILES : '';
+
 		$this->data = $data;
+		$this->file = $file;
 	}
 
 	

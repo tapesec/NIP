@@ -168,9 +168,11 @@ class Model{
 	public function update($data = array(), $clause = array()){
 		
 		if($this->beforeSave($data)){
-			if(isset($data[$this->request->action])){
-				unset($data[$this->request->action]);
+			unset($data[$this->request->action]);
+			if(isset($data['max_size'])){
+				unset($data['max_size']);
 			}
+			
 			$fields ='';
 			foreach($data as $k => $v){
 				$fields .= ', '.$k.' = ? ';
@@ -190,6 +192,7 @@ class Model{
 					$array_exec[] = $v;
 					//debug($array_exec);
 			}
+			echo 'array exec:';
 			debug($array_exec);
 
 		$where = 'WHERE'.implode(' AND ', $filter);
@@ -226,20 +229,62 @@ class Model{
 	//	echo $req;
 	//print_r($array_exec);
 	//die('attention !');
-		$r = Model::$dbi->prepare($req);
-		$r->execute($array_exec);
+		try{
+			$r = Model::$dbi->prepare($req);
+			$r->execute($array_exec);
+			return true;
+		}catch(PDOException $e){
+			echo 'Error :'.$e->getMessage();
+			return false;
+		}
+		
+
 	}
 
 	/**
 	*@return compte le nombre d'occurence de la table
 	**/
-	public function count(){
+	public function count($array=null){
+		$cond = (isset($array['where']))? $array['where'] : '1=1';
 
-		$req = 'SELECT COUNT(*) AS compteur FROM '.lcfirst(get_class($this)).'s';
-		$result = Model::$dbi->query($req);
-		 while($d = $result->fetch()){
-		 	return $d['compteur'];
-		 }
+		if($cond !== '1=1'){
+			foreach($cond as $k => $v){
+				$f1[] = ' '.$k.' = ? ';	
+			}
+			$m = implode(' AND ', $f1);
+		}else{
+			$m = '1=1';
+		}
+		//$where = (isset($param['where']
+		$req = 'SELECT COUNT(*) AS compteur FROM '.lcfirst(get_class($this)).'s WHERE '.$m;
+
+		try{
+			if($cond !== '1=1'){
+				//préparation de la requete ..
+				
+				$result = Model::$dbi->prepare($req);
+					//attribution dynamique des variables de condition
+					foreach($cond as  $vv){
+						$param[] = $vv;
+					}
+					//debug($param);
+					
+				$result->execute($param);
+			
+			}else{
+				// sinon aucun paramètre fourni, execution d'une requête simple
+				$result = Model::$dbi->query($req);
+			}
+
+		 	while($d = $result->fetch()){
+		 		return $d['compteur'];
+		 	}
+
+		 	$result->closeCursor();
+
+		}catch(PDOException $e){
+			echo 'Erreur :' .$e->getMessage();
+		}
 	}
 
 
@@ -281,10 +326,17 @@ class Model{
 	**/
 	public function beforeSave($data = array()){
 		if(isset($data[$this->request->action])){
-			debug($data[$this->request->action]);
+			debug($data);
+			debug($_SESSION);
+			debug($_SESSION[$this->request->action]);
+			//die();
 			if($data[$this->request->action] == $_SESSION[$this->request->action]){
 				unset($data[$this->request->action]);
+				if(isset($data['max_size'])){
+					unset($data['max_size']);
+				}
 				debug($data);
+				
 				if(!empty($this->validate)){
 					echo 'checkpoint';
 					foreach($data as $k => $v){
@@ -341,6 +393,8 @@ class Model{
 			}else{
 				die('Les données reçu ne proviennt pas d\une source valide, quelque chose ne fonctionne pas normalement !');
 			}
+		}else{
+			die('il n\'existe pas de request action');
 		}
 	}
 }

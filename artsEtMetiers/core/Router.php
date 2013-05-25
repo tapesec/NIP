@@ -12,7 +12,7 @@ class Router{
 		$url = trim($url,'/');
 		$k = explode('/', $url);
 		
-		debug(self::$right);
+		//debug(self::$right);
 		
 		$request->controller = (isset($k[0]))? $k[0] : 'demo';
 		$request->action = (isset($k[1]))? $k[1] : 'index';

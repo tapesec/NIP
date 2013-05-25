@@ -84,7 +84,7 @@ class Controller{
 	*@param $action nom de l'action à appeller dans le controller ci dessus
 	*@return $data les données à afficher dans le layout qui a a appelé la fonction. 
 	**/
-	public function layoutLoad($controller, $action){
+	public function layoutLoad($controller, $action, $id=null){
 		$controller_name = $controller.'Controller';
 		$file = ROOT.DS.'Controllers'.DS.$controller_name.'.php';
 		require_once $file;
@@ -92,7 +92,7 @@ class Controller{
 			$c = new $controller_name($this->request, $this->session);
 			Dispatcher::$controller[$controller_name] = $c;
 		}
-		$data = Dispatcher::$controller[$controller_name]->$action();
+		$data = Dispatcher::$controller[$controller_name]->$action($id);
 		return $data;
 		//debug($data, false);
 		
@@ -129,11 +129,23 @@ class Controller{
 	**/
 	public function link($dir, $file){
 		if($dir == 'css'){
-			$link = '<link rel="stylesheet" type="text/css" href="../'.$dir.'/'.$file.'.css">'.PHP_EOL;
-		}else if($dir == 'javascript'){
-			$link = '<script type="text/javascript" src="../'.$dir.'/'.$file.'.js"></script>'.PHP_EOL;
+			$link = '<link rel="stylesheet" type="text/css" href="'.BASE_URL.'/'.$dir.'/'.$file.'.css">'.PHP_EOL;
+		}elseif($dir == 'javascript'){
+			$link = '<script type="text/javascript" src="'.BASE_URL.'/'.$dir.'/'.$file.'.js"></script>'.PHP_EOL;
 		}
 		return $link;
+	}
+
+	/**
+	*
+	**/
+	public function img($file, $param=null){
+		$class = (isset($param['class']))? $param['class'] : '';
+		$alt = (isset($param['alt']))? $param['alt'] : '';
+		$id = (isset($param['id']))? $param['id'] : '';
+
+		$img = '<img src="'.BASE_URL.'/img/'.$file.'" class="'.$class.'" id="'.$id.'" alt="'.$alt.'">';
+		echo $img;
 	}
 
 	/**
@@ -193,10 +205,11 @@ class Controller{
 	public function paginator($url, $class=null){
 		
 		$c = $this->counter;
-		
+		echo '<div class="'.$class.'">';
 		for($i=1;$i<=$c;$i++){
-			echo '<a class="'.$class.'" href="'.BASE_URL.'/'.$url.'/'.$i.'">'.$i.'</a>';
+			echo '<span><a href="'.BASE_URL.'/'.$url.'/'.$i.'">'.$i.'</a><span>';
 		}
+		echo '</div>';
 		
 	}
 }
