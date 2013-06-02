@@ -56,7 +56,9 @@ class Config{
 								'logout' => 1),
 							'forum' => array(
 								'addSubject' => 1,
-								'addReply' =>1),
+								'delReply' => 1),
+							'parcours' => array(
+								'edit' => 1),
 							'backoff' => array(
 								'index' => 10,
 								'addArticle' => 10,

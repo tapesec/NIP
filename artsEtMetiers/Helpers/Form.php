@@ -34,7 +34,7 @@ class Form{
 			echo '<input type="hidden" name="max_size" value="'.$size.'">'.PHP_EOL;
 		}
 		if(isset($name) && isset($value)){
-			echo '<input type="hidden" name="'.$name.'" value="'.$value.'">'.PHP_EOL;
+			echo '<input type="hidden" name="put'.$name.'" value="'.$value.'">'.PHP_EOL;
 		}
 		
 	}
@@ -50,7 +50,10 @@ class Form{
 		$value= (isset($param['value']))? $param['value'] : '';
 		$list = (isset($param['list']))? $param['list'] : '';
 		$class = (isset($param['class']))? $param['class'] : '';
+		$rows = (isset($param['rows']))? 'rows="'.$param['rows'].'"' : '';
 		$message = (isset($param['message']))? $param['message'] : '';
+		$suffixe = (isset($param['suffixe']))? md5(rand(1,100) + rand(1,100) + rand(1,100)) : false;
+		$name = $name.$suffixe;
 		if(is_array($list)){
 			if(is_array(current($list))){
 				debug(current($list));
@@ -61,13 +64,13 @@ class Form{
 			echo '<label>'.$label.'</label>'.PHP_EOL;
 		}
 		if($type == 'textarea'){
-			echo '<textarea name="'.$name.'" class="'.$class.'">'.$value.'</textarea>'.PHP_EOL;
+			echo '<textarea name="'.$name.'" '.$rows.' class="'.$class.'">'.$value.'</textarea>'.PHP_EOL;
 				
 		}elseif($type == 'select'){
 			echo '<select name="'.$name.'" class="'.$class.'">';
 
-			foreach ($list as $k => $array) {
-				$this->parse($k, $array, $value);
+			foreach ($list as $k => $v) {
+				$this->parse($k, $v, $value);
 			}
 
 			echo '</select>'.PHP_EOL;
@@ -75,7 +78,10 @@ class Form{
 		}elseif($type == 'checkbox'){
 			$checked = ($value == 1)? 'checked' : '';
 			$value = ($value ==0)? 1 : $value;
-			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" class="'.$class.'" '.$checked.'>'.$label.PHP_EOL;	
+			echo '<label class="'.$class.'">';
+			//echo '<input type="hidden" name="'.$name.'" value="0"/>';
+			echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" '.$checked.'>'.$label.PHP_EOL;	
+			echo '</label>';
 		}elseif($type == 'file'){
 			echo '<input type="'.$type.'" name="'.$name.'" class="'.$class.'">'.PHP_EOL;
 		}else{
@@ -109,29 +115,34 @@ class Form{
 	*@param
 	*@return fonction récursive pour afficher des données dans un menu déroulant
 	**/
-	public function parse($k, $array, $value){
-		if(is_array($array)){
-			foreach ($array as $k => $v) {
-				$this->parse($k, $v, $value);
+	public function parse($k, $v, $value){
+		if(is_array($v)){
+			foreach ($v as $kk => $vv) {
+				$this->parse($kk, $vv, $value);
 			}		
 		}
 		else{
 			if(preg_match('/id/', $k)){
-				self::$id_value = $array;//echo '<option value="'.$array.'">qzdqzdqz</option>';
+				self::$id_value = $v;//echo '<option value="'.$array.'">qzdqzdqz</option>';
 			}elseif(preg_match('/name|title|content/i', $k)){
 				if(self::$id_value == $value){
-					echo '<option value="'.self::$id_value.'" selected >'.$array.'</option>';	
+					echo '<option value="'.self::$id_value.'" selected >'.$v.'</option>';	
 				}else{
-					echo '<option value="'.self::$id_value.'" >'.$array.'</option>';
+					echo '<option value="'.self::$id_value.'" >'.$v.'</option>';
 				}
 			
 			}elseif(is_int($k)){
-				echo '<option value="'.$k.'" selected>'.$array.'</option>';
-			}else{
-				if($array == $value){
-					echo '<option value="'.$array.'" selected>'.$array.'</option>';
+				if($k == $value){
+					echo '<option value="'.$k.'" selected>'.$v.'</option>';
 				}else{
-					echo '<option value="'.$array.'">'.$array.'</option>';	
+					echo '<option value="'.$k.'" >'.$v.'</option>';
+				}
+				
+			}else{
+				if($v == $value){
+					echo '<option value="'.$v.'" selected>'.$v.'</option>';
+				}else{
+					echo '<option value="'.$v.'">'.$v.'</option>';	
 				}
 				
 			}

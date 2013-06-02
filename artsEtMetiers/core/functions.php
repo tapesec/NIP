@@ -1,6 +1,8 @@
 <?php
 
 function debug($var, $dump=false){
+	
+	
 	if($dump){
 		echo '<pre>';
 		var_dump($var);
@@ -9,5 +11,15 @@ function debug($var, $dump=false){
 		echo '<pre>';
 		print_r($var);
 		echo '</pre>';
+	}
+}
+
+
+function write($var){
+	if(Config::$debug_level == 1){
+		echo $var;
+	}
+	else{
+		echo '';
 	}
 }

@@ -10,7 +10,7 @@ class Truncate{
 	*
 	**/
 	public function __construct(){
-		echo 'Truncate instancié<br>';
+		write('Truncate instancié<br>');
 	}
 
 	/**

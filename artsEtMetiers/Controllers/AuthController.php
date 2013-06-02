@@ -2,7 +2,7 @@
 
 class AuthController extends Controller{
 
-	public $helpers = array('Form'); //charge les helpers passé dans le tableau
+	public $helpers = array('Form', 'DateHelper', 'Truncate'); //charge les helpers passé dans le tableau
 	
 
 	/**
@@ -13,6 +13,7 @@ class AuthController extends Controller{
 		
 		if($this->request->is('POST')){
 			$this->loadModel('User');
+			$this->loadModel('Avatar');
 			$check_user = $this->User->find(array(
 										'where' => array(
 											'use_login' => $this->request->data['use_login'])));
@@ -23,7 +24,15 @@ class AuthController extends Controller{
 				debug($check_user);
 				$this->request->data['use_statut'] = 1;
 				$this->request->data['use_checked'] = 1;
+				$this->request->data['use_dateI'] = DateHelper::now();
+				$this->request->data['use_dateC'] = DateHelper::now();
 				if($this->User->save($this->request->data)){
+					$use_id = $this->User->find(array('fields' => 'use_id',
+											'where' => array('use_login' => $this->request->data['use_login'])));
+					Request::$handMade = true;
+					$this->Avatar->save(array('ava_url' => 'avatar/default.png', 'ava_id_user' => $use_id[0]['use_id']));
+
+					Request::$handMade = false;
 					$this->session->setFlash('Inscription completed !');
 					$this->redirect('blog/index');
 				}else{
@@ -56,8 +65,14 @@ class AuthController extends Controller{
 			//debug($check_user);
 			//die();
 			if($check_user){
+				Request::$handMade = true;
+				if(!$this->User->update(array('use_dateC' => DateHelper::now()), array('where' => array('use_login' => $this->request->data['use_login'])))) {
+					$this->session->setFlash('Connexion impossible veuillez retenter ou contacter l\'administrateur');
+					$this->redirect($this->referer());
+				}
+				Request::$handMade = false;
 				Auth::load($check_user);
-				$this->session->setFlash('BONJOUR !');
+				$this->session->setFlash('BONJOUR '.$this->request->data['use_login'].' !', 'success');
 				
 			}else{
 				$this->session->setFlash('login ou mot de passe incorrect !');
@@ -71,7 +86,7 @@ class AuthController extends Controller{
 	**/
 	public function logout(){
 		Auth::destroy();
-		$this->session->setFlash('AU REVOIR !<br>');
+		$this->session->setFlash('AU REVOIR !', 'success');
 		
 		$this->redirect('blog/index');
 	}
@@ -139,6 +154,10 @@ class AuthController extends Controller{
 				debug($this->request->data);
 
 				if($this->Avatar->update($this->request->data, array('where' => array('ava_id_user' => $id)))){
+					debug($this->request->data['ava_url']);
+					
+					Auth::load($this->request->data);
+					
 					$this->session->setFlash('Avatar bien mis à jour !');
 					$this->redirect($this->referer);
 				}else{

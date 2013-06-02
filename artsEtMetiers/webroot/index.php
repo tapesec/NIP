@@ -13,7 +13,7 @@ define('TEST', dirname(dirname($_SERVER['PHP_SELF'])));
 require_once ROOT.DS.'core'.DS.'includes.php';
 
 
-new Dispatcher();
+new Dispatcher();debug($_GET);
 //$_SESSION = array();
 if(isset($_SESSION)){
 	debug($_SESSION);

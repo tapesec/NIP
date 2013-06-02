@@ -13,7 +13,7 @@ class Controller{
 	*@param object $request instance de la classe Request
 	**/
 	public function __construct(Request $request=null, Session $session=null){
-		echo get_class($this).' instancié !<br>';
+		write(get_class($this).' instancié !<br>');
 		$this->request = $request;
 		$this->session = $session;
 		$this->referer = (isset($_SERVER['HTTP_REFERER']))? $_SERVER['HTTP_REFERER']: '';	
@@ -127,10 +127,10 @@ class Controller{
 	/**
 	*@return $link un lien spécifique vers un fichier css ou javascript
 	**/
-	public function link($dir, $file){
-		if($dir == 'css'){
+	public function link($dir, $file, $type=null){
+		if($dir == 'css' || $type == 'css'){
 			$link = '<link rel="stylesheet" type="text/css" href="'.BASE_URL.'/'.$dir.'/'.$file.'.css">'.PHP_EOL;
-		}elseif($dir == 'javascript'){
+		}elseif($dir == 'javascript' || $type == 'javascript'){
 			$link = '<script type="text/javascript" src="'.BASE_URL.'/'.$dir.'/'.$file.'.js"></script>'.PHP_EOL;
 		}
 		return $link;
@@ -206,9 +206,11 @@ class Controller{
 		
 		$c = $this->counter;
 		echo '<div class="'.$class.'">';
+		echo '<ul>';
 		for($i=1;$i<=$c;$i++){
-			echo '<span><a href="'.BASE_URL.'/'.$url.'/'.$i.'">'.$i.'</a><span>';
+			echo '<li><a href="'.BASE_URL.'/'.$url.'/'.$i.'">'.$i.'</a></li>';
 		}
+		echo '</ul>';
 		echo '</div>';
 		
 	}

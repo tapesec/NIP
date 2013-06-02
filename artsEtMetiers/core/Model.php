@@ -12,7 +12,7 @@ class Model{
 	*@return $dbi : retourne une instance de PDO.
 	**/
 	public function __construct(Session $session, Request $request){
-		echo 'model '.get_class($this).' instancié !<br>';
+		write('model '.get_class($this).' instancié !<br>');
 		$this->session = $session;
 		$this->request = $request;
 		if(!Model::$connected){
@@ -85,7 +85,7 @@ class Model{
 		$req = 'SELECT '.$fields.' FROM '.lcfirst(get_class($this)).'s '.$jointure.
 		' WHERE '.$m.' '.$group.' ORDER BY '.$order.'  '.$limit;
 		
-		//echo $req.'<br>'; //<-- affichera la requête SQL finale avant sa préparation et l'insertion des variables sécurisées
+		echo $req.'<br>'; //<-- affichera la requête SQL finale avant sa préparation et l'insertion des variables sécurisées
 		//die();
 		// on essaye d'executer le bloc ci dessous ..
 		try{
@@ -97,6 +97,7 @@ class Model{
 				foreach($cond as  $vv){
 					$param[] = $vv;
 				}
+				//debug($param);
 			$result->execute($param);
 			
 			}else{
@@ -127,6 +128,19 @@ class Model{
 	**/
 	public function save($data = array()){
 		if($this->beforeSave($data)){
+			foreach($data as $k => $v){
+				if(preg_match('/^put[a-zA-Z-0-9_\-.]+id$/', $k)){
+					$new_value = $v;
+					$new_key = substr($k, 3);
+					unset($data[$k]);
+					$data[$new_key] = $new_value;
+					//debug($k);
+					break;
+				}
+			}
+			
+			debug($data);
+			
 			$fields = '';
 			$tokken ='';
 		
@@ -141,10 +155,11 @@ class Model{
 			}
 			$fields =  trim($fields, ',');
 			$tokken =  trim($tokken, ',');
-			echo $fields.'<br>';
+			//echo $fields.'<br>';
 
 			$req = 'INSERT INTO '.lcfirst(get_class($this)).'s ('.$fields.') VALUES ('.$tokken.')';
-			echo $req;
+			echo $req.'<br>';
+			write($req);
 			try{
 				$r = Model::$dbi->prepare($req);
 				$r->execute($array_exec);
@@ -168,6 +183,16 @@ class Model{
 	public function update($data = array(), $clause = array()){
 		
 		if($this->beforeSave($data)){
+			foreach($data as $k => $v){
+				if(preg_match('/^put[a-zA-Z-0-9_\-.]+id$/', $k)){
+					$new_value = $v;
+					$new_key = substr($k, 3);
+					unset($data[$k]);
+					$data[$new_key] = $new_value;
+					//debug($k);
+					break;
+				}
+			}
 			unset($data[$this->request->action]);
 			if(isset($data['max_size'])){
 				unset($data['max_size']);
@@ -193,11 +218,11 @@ class Model{
 					//debug($array_exec);
 			}
 			echo 'array exec:';
-			debug($array_exec);
+			//debug($array_exec);
 
 		$where = 'WHERE'.implode(' AND ', $filter);
 			$req = 'UPDATE '.lcfirst(get_class($this)).'s SET '.$fields. $where;
-			echo $req;
+			echo $req.'<br>';
 			try{
 				$r = Model::$dbi->prepare($req);
 				$r->execute($array_exec);
@@ -220,13 +245,14 @@ class Model{
 	**/
 	public function delete($param = array()){
 	foreach($param as $k => $v){
-		$k .= ' = ?';
+		$conds[] = ' '.$k.' = ?';
 		$array_exec[] = $v;
-		break;
 	}
+	$conds = (implode(' AND ', $conds));
+	//debug($k);
 	
-		$req = 'DELETE FROM '.lcfirst(get_class($this)).'s WHERE '.$k;
-	//	echo $req;
+		$req = 'DELETE FROM '.lcfirst(get_class($this)).'s WHERE '.$conds;
+		echo $req.'<br>';
 	//print_r($array_exec);
 	//die('attention !');
 		try{
@@ -326,6 +352,7 @@ class Model{
 	**/
 	public function beforeSave($data = array()){
 		if(isset($data[$this->request->action])){
+			
 			debug($data);
 			debug($_SESSION);
 			debug($_SESSION[$this->request->action]);
@@ -390,11 +417,15 @@ class Model{
 				}else{
 					return true;
 				}
-			}else{
+			}elseif(!Request::$handMade){
 				die('Les données reçu ne proviennt pas d\une source valide, quelque chose ne fonctionne pas normalement !');
+			}else{
+				return true;
 			}
-		}else{
+		}elseif(!Request::$handMade){
 			die('il n\'existe pas de request action');
+		}else{
+			return true;
 		}
 	}
 }

@@ -17,22 +17,28 @@ class DateHelper extends DateTime{
 
 		$now = time();
 		$strdate = strtotime($obj->format('Y-m-d H:i:s'));
-
+		//debug($strdate);
 		
 		if($delay){
 			$diff = $now - $strdate;
-			$diff = round($diff/(3600*24));
+			$diff = ceil($diff/(3600*24));
+			//debug($diff);
 			if($diff > 30){
-				$dateFinale = 'Il y a '.round($diff/(3600*24*30)).' mois';
+				$dateFinale = self::fr($date);
+				return $dateFinale;
+				//debug($dateFinale);
 			}elseif($diff <= 30 && $diff > 1){
-				$dateFinale = 'Il y a '.round($diff/(3600*24)).' jours';
-			}else{
-				$dateFinale = ucfirst(strftime('%a %d %b %Y', $strdate));
+				return $dateFinale = 'Il y a '.$diff.' jours';
+			}elseif($diff <= 1){
+				return $dateFinale = ucfirst(strftime('Aujourd\'hui à %H : %M', $strdate));
+				//die('erreur date');
 			}
 		}else{
 			$dateFinale = ucfirst(strftime('%a %d %b %Y', $strdate));
+			return $dateFinale;
 		}
-		return $dateFinale;
+		//debug($dateFinale);
+		//return $dateFinale;
 
 	}
 

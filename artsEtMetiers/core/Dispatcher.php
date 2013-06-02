@@ -18,7 +18,7 @@ class Dispatcher{
 			Auth::start($_SESSION['auth']);
 		}
 		Router::parse($this->request->url, $this->request, Auth::$session);
-		echo 'dispatcher instancié !<br>';
+		write('dispatcher instancié !<br>');
 		$controller = $this->loadController();
 		
 		if(!method_exists(get_class($controller), $this->request->action)){

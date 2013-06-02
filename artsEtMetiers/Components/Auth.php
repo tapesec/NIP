@@ -8,13 +8,14 @@ class Auth{
 	*@param $user les informations issues d'une base de données d'un utilisateurs venant de se connecté
 	*@return crée et hydrate la super variable de sessions 'auth' de chaques attributs de l'utilisateur connecté
 	**/
-	public function load($user = array()){
+	public static function load($user = array()){
 		debug(current($user));
 		//echo 'load !';
 
-		foreach(current($user) as $k => $v){
-			$_SESSION['auth'][$k] = $v;
+		foreach($user as $k => $v){
+			self::rec($k, $v);
 		}
+		//die();
 	}
 
 
@@ -37,6 +38,19 @@ class Auth{
 	static public function destroy(){
 		unset($_SESSION['auth']);
 		
+	}
+
+	/**
+	*@param $k, $v couple clé valeur pour la fonction récursive
+	**/
+	static private function rec($k, $v){
+		if(is_array($v)){
+			foreach ($v as $kk => $vv) {
+				self::rec($kk, $vv);
+			}
+		}else{
+			$_SESSION['auth'][$k] = $v;
+		}
 	}
 	
 }

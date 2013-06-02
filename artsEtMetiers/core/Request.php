@@ -5,6 +5,7 @@ Class Request{
 	public $url; // l'url tapé par l'internaute dans son navigateur
 	public $data = array(); // les données issues de requêtes GET ou POST
 	public $file = array();
+	static $handMade = false;
 
 	public function __construct(){
 		$this->url = (isset($_SERVER['PATH_INFO']))? $_SERVER['PATH_INFO'] : '';
@@ -24,8 +25,9 @@ Class Request{
 	public function is($type){
 		if($type == 'PUT'){
 			foreach($this->data as $k => $v){
-				if(preg_match('/^[a-zA-Z-0-9_\-.]+id$/', $k) && !empty($v)){
-					echo 'ok put !';
+				if(preg_match('/^put[a-zA-Z-0-9_\-.]+id$/', $k) && !empty($v)){
+
+					write('ok put !');
 					return true;
 					break;
 				}else{

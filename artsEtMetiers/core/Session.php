@@ -8,7 +8,7 @@ class Session{
 	**/
 	public  function __construct(){
 		session_start(); 
-		echo 'new session !<br>';
+		write('new session !<br>');
 
 	}
 
@@ -25,19 +25,24 @@ class Session{
 	/**
 	*@param $message le message flash a afficher
 	**/
-	public function setFlash($message){
+	public function setFlash($message, $statut=null){
 		$this->set('flash', $message);
+		$this->set('flashStatut', $statut);
 	}
 
 	/**
 	*@return $_SESSION['flash'], le message flash dans la vue
 	**/
-	public function flash(){
+	public function flash($statut=null){
+		
 		if(!empty($_SESSION['flash'])){
-			echo $_SESSION['flash'].'<br>';
+			include ROOT.DS.'views'.DS.'flash'.DS.'flash.php';
+		}else{
+			echo '';
 		}
 		/*$_SESSION['compteur'] = $_SESSION['compteur'] +1;*/
 		$_SESSION['flash'] ='';
+		$_SESSION['flashStatut'] ='';
 	}
 
 }
