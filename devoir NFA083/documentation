@@ -1,0 +1,62 @@
+Bonjour,
+
+Pour installer le site internet il faut disposer de wamp server en état de marche.
+
+C'est à dire que quand vous lancez wamserver l'icone W est bien vert et pas rouge ou orange.
+
+Si en lancant wampserver l'icone reste rouge ou seulement orange c'est qu'il faut installer les deux choses suivantes 
+si ce n'est pas déjà le cas :
+
+Visual c++ redistribuable version 2010 pour systeme 64bits
+http://www.microsoft.com/fr-fr/download/details.aspx?id=14632 
+
+ou
+
+Visual c++ redistribuable version 2010 pour systeme 32bits
+http://www.microsoft.com/fr-fr/download/details.aspx?id=5555
+
+ET
+
+Visual c++ redistribuable version 2008 pour systeme 32bits
+http://www.microsoft.com/fr-fr/download/details.aspx?id=29
+
+ou
+
+Visual c++ redistribuable version 2008 pour systeme 64bits
+http://www.microsoft.com/fr-fr/download/details.aspx?id=15336
+
+(pour savoir si vous les avez déjà aller dans votre gestionnaire de logiciel installé)
+
+ENSUITE 
+
+cliquez gauche une fois sur l'icone W de wamp server dans votre barre des taches
+
+-> dossier apache
+-> fichier httpd.conf
+
+dans ce fichier, cherchez la ligne
+
+#LoadModule rewrite_module modules/mod_rewrite.so (cette ligne se trouve environ dans le 1er quart du fichier)
+
+(cette ligne commence OU PAS par un "#")
+SI la ligne commence par un "#" enlever le "#" et sauvegardé.
+Si la ligne ne commence pas par "#" ne faites rien c'est déjà bon .
+Redemarrez wamp.
+
+
+Pour finir copié collé le dossier ArtsEtMetiers
+dans votre dossier wamp/www/
+
+Assurez vous d'avoir wamp de connecté ("W" couleur vert)
+et tapez dans la barre d'adresse de votre navigateur localhost/artsEtMetiers
+
+Et c'est parti !
+
+Pour tout problème.
+lionel.dupouy@gmail.com (jour et nuit)
+
+
+
+
+
+
