@@ -1,0 +1,1 @@
+<p>Et ceci est la <span style="color:red;">vue</span> (index) par défaut du <span style="color:red;">controller</span> démo du framework</p>
