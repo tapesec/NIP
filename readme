@@ -1,4 +1,2 @@
-This artetmetiers folder contain my after studying project, a blog about my studies.
-This project is in progress.
-I'm using a madeself framework i name "NIP" 
-
+Wheel PHP est un framework maison développé initialement à l'occasion d'un devoir de fin d'études que j'améliore au fur et à mesure que je développe de nouveaux projet.
+Il est developpé entierement en Orienté Objet et suit le modèle MVC.
